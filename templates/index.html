@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Language Translator</title>
+    <style>
+        /* ... your existing CSS styles ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .translator-container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            resize: vertical;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            min-height: 100px;
+        }
+
+        input[type="file"], select, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button[type="submit"] {
+            background-color: #0072ff;
+            color: white;
+            border: none;
+            font-weight: bold;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #005ecb;
+        }
+
+        button[type="button"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-weight: bold;
+        }
+
+        button[type="button"]:hover {
+            background-color: #388E3C;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 5px solid #4CAF50;
+            border-radius: 8px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="translator-container">
+        <h2>Language Translator</h2>
+
+        <form method="POST" enctype="multipart/form-data" autocomplete="off">
+            <textarea id="text-input" name="text" placeholder="Enter text to translate"></textarea>
+
+            <button type="button" onclick="startVoiceInput()">🎤 Speak</button>
+
+            <input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg" />
+<select name="language" required>
+    <option value="">Select Language</option>
+    {% for lang in languages %}
+        <option value="{{ lang }}" {% if lang == selected_language %}selected{% endif %}>{{ lang }}</option>
+    {% endfor %}
+</select>
+
+            <button type="submit">Translate</button>
+        </form>
+
+        {% if result %}
+        <div class="result">
+            <strong>Translation:</strong>
+            <pre style="white-space: pre-wrap; font-family: inherit;">{{ result }}</pre>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('Your browser does not support voice recognition.');
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const spokenText = event.results[0][0].transcript;
+                document.getElementById('text-input').value = spokenText;
+            };
+
+            recognition.onerror = function(event) {
+                alert('Speech recognition error: ' + event.error);
+            };
+        }
+
+        // Clear all form fields on page reload
+      window.onload = function() {
+    document.querySelector("form").reset();
+};
+
+    </script>
+
+</body>
+</html>
+
