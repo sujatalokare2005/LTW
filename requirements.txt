@@ -1,2 +1,6 @@
-flask
+Flask
 google-generativeai
+pillow
+pytesseract
+pdf2image
+Werkzeug
